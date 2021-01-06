@@ -1,0 +1,104 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.1"
+
+    defaultConfig {
+        applicationId "com.example.majiatest"
+        minSdkVersion 16
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    flavorDimensions "default"
+    productFlavors {
+        //第一个马甲包（这个名字不能带数字）
+        majiaOne {}
+        //第二个马甲包
+        majiaTwo {}
+        //第三个马甲包
+        majiaThree {}
+    }
+
+    productFlavors.each { flavor ->
+        def props = new Properties()
+        file("../variants/${flavor.name}/config.properties").withInputStream { props.load(new InputStreamReader(it, "utf-8")) }
+        flavor.dimension "default"
+        def application_id = props.getProperty("application_id")
+        def version_name = props.getProperty("version_name")
+        def version_code = props.getProperty("version_code")
+        def qq_app_id = props.getProperty("qq_app_id")//qq的app_id
+        def wx_app_id = props.getProperty("wx_app_id")//wx的app_id
+        def file_path = props.getProperty("file_path")
+
+        flavor.versionName version_name
+        flavor.versionCode version_code.toInteger()
+        flavor.applicationId application_id
+
+        flavor.buildConfigField 'String', 'APP_PAGE_NAME', "\"${application_id}\""
+        flavor.buildConfigField 'String', 'QQ_APP_D', "\"${qq_app_id}\""
+        flavor.buildConfigField 'String', 'WX_APP_ID', "\"${wx_app_id}\""
+        flavor.buildConfigField 'String', 'APP_FILE_PATH', "\"${file_path}\""
+    }
+    sourceSets {
+        majiaOne {
+            manifest.srcFile "../variants/majiaOne/AndroidManifest.xml"
+            jniLibs.srcDirs = ["../variants/majiaOne/jniLibs"]
+            java.srcDirs = ["../variants/majiaOne/src"]
+            resources.srcDirs = ["../variants/majiaOne/src"]
+            aidl.srcDirs = ["../variants/majiaOne/src"]
+            renderscript.srcDirs = ["../variants/majiaOne/src"]
+            res.srcDirs = ["../variants/majiaOne/res"]
+            assets.srcDirs = ["../variants/majiaOne/assets"]
+        }
+
+        majiaTwo {
+            manifest.srcFile "../variants/majiaTwo/AndroidManifest.xml"
+            jniLibs.srcDirs = ["../variants/majiaTwo/jniLibs"]
+            java.srcDirs = ["../variants/majiaTwo/src"]
+            resources.srcDirs = ["../variants/majiaTwo/src"]
+            aidl.srcDirs = ["../variants/majiaTwo/src"]
+            renderscript.srcDirs = ["../variants/majiaTwo/src"]
+            res.srcDirs = ["../variants/majiaTwo/res"]
+            assets.srcDirs = ["../variants/majiaTwo/assets"]
+        }
+
+        majiaThree {
+            manifest.srcFile "../variants/majiaThree/AndroidManifest.xml"
+            jniLibs.srcDirs = ["../variants/majiaThree/jniLibs"]
+            java.srcDirs = ["../variants/majiaThree/src"]
+            resources.srcDirs = ["../variants/majiaThree/src"]
+            aidl.srcDirs = ["../variants/majiaThree/src"]
+            renderscript.srcDirs = ["../variants/majiaThree/src"]
+            res.srcDirs = ["../variants/majiaThree/res"]
+            assets.srcDirs = ["../variants/majiaThree/assets"]
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation "androidx.core:core-ktx:+"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+
+}
+repositories {
+    mavenCentral()
+}

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <!--打包时会自动合并-->
+    <application>
+
+        <activity android:name="com.example.majiatest.MajiaTestActivity"/>
+
+    </application>
+
+</manifest>
+
+
